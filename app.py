@@ -15,7 +15,7 @@ import json
 from collections import Counter
 import random
 
-# Initialize NLP components
+
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
@@ -29,7 +29,7 @@ app = Dash(__name__, external_stylesheets=[
     "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 ])
 
-# Custom CSS for styling and animations
+
 app.index_string = '''
 <!DOCTYPE html>
 <html>
@@ -135,7 +135,7 @@ RESUME_TEMPLATES = [
     }
 ]
 
-# Industry-specific skills for recommendations
+
 INDUSTRY_SKILLS = {
     "technology": [
         "Python", "JavaScript", "Java", "C++", "SQL", "React", "Node.js", 
@@ -533,9 +533,9 @@ def optimize_for_job(text, job_description):
     
     return text, changes
 
-# Define the layout
+
 app.layout = dbc.Container([
-    # Header Section
+    
     dbc.Row([
         dbc.Col([
             html.H1("Resume Forge", className="text-center my-4 text-primary"),
@@ -543,9 +543,9 @@ app.layout = dbc.Container([
         ], width=12)
     ], className="bg-light py-4 rounded shadow-sm"),
     
-    # Main Content
+    
     dbc.Row([
-        # Upload Section
+        
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader("Upload Your Resume", className="bg-primary text-white"),
@@ -577,7 +577,7 @@ app.layout = dbc.Container([
             ], className="shadow-sm"),
         ], width=6, className="mb-4"),
         
-        # Enhancement Options Section
+        
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader("Enhancement Options", className="bg-primary text-white"),
@@ -609,7 +609,7 @@ app.layout = dbc.Container([
         ], width=6, className="mb-4"),
     ]),
     
-    # Job Description Section (initially hidden)
+    
     html.Div([
         dbc.Row([
             dbc.Col([
@@ -636,7 +636,7 @@ app.layout = dbc.Container([
         ]),
     ], id="job-description-section", style={"display": "none"}),
     
-    # Template Selection
+    
     dbc.Row([
         dbc.Col([
             dbc.Card([
@@ -668,7 +668,7 @@ app.layout = dbc.Container([
         ], width=12)
     ]),
     
-    # Progress Indicator
+    
     dbc.Row([
         dbc.Col([
             html.Div(id="progress-container", className="d-none"),
@@ -756,13 +756,13 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
     if n_clicks is None or contents is None:
         return "d-none", 0, "", None, None, None, None, None, None
     
-    # Show progress container
+    
     progress_container = ""
     
-    # Parse the uploaded file
+    
     file_bytes = parse_contents(contents)
     
-    # Extract text based on file type
+    
     if filename.endswith('.pdf'):
         resume_text = extract_text_from_pdf(file_bytes)
     elif filename.endswith('.docx'):
@@ -770,18 +770,18 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
     else:
         return "d-none", 0, "", html.Div("Unsupported file format"), None, None, None, None, None
     
-    # Update progress
+    
     progress = 20
     progress_status = "Extracting text from resume..."
     
-    # Extract skills
+    
     skills = extract_skills(resume_text)
     
-    # Update progress
+    
     progress = 40
     progress_status = "Analyzing resume content..."
     
-    # Apply selected enhancements and track changes
+    
     enhanced_text = resume_text
     all_changes = []
     
@@ -805,18 +805,18 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
             enhanced_text, changes = optimize_for_job(enhanced_text, job_description)
             all_changes.extend(changes)
     
-    # Update progress
+    
     progress = 60
     progress_status = "Enhancing resume content..."
     
-    # Analyze the resume
+    
     analysis = analyze_resume(enhanced_text)
     
-    # Add job-specific analysis if job description is provided
+    
     if "job_target" in enhancement_options and job_description:
         job_keywords = extract_job_keywords(job_description)
         if job_keywords:
-            # Check how many job keywords are in the resume
+            
             found_keywords = [keyword for keyword in job_keywords if keyword.lower() in enhanced_text.lower()]
             match_percentage = len(found_keywords) / len(job_keywords) * 100
             
@@ -827,16 +827,16 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
             else:
                 analysis["improvements"].append(f"Low match with job requirements (only {match_percentage:.0f}% of keywords found)")
             
-            # Add missing keywords to suggestions
+            
             missing_keywords = [keyword for keyword in job_keywords if keyword.lower() not in enhanced_text.lower()]
             if missing_keywords:
                 analysis["suggestions"].append(f"Consider adding these job-specific keywords: {', '.join(missing_keywords[:5])}")
     
-    # Update progress
+    
     progress = 80
     progress_status = "Preparing results..."
     
-    # Create the enhancement output
+    
     enhancement_output = html.Div([
         dbc.Card([
             dbc.CardHeader("Enhanced Resume", className="bg-success text-white"),
@@ -855,12 +855,12 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
         ], className="shadow-sm")
     ])
     
-    # Create the analysis output
+    
     analysis_output = html.Div([
         dbc.Card([
             dbc.CardHeader("Resume Analysis", className="bg-primary text-white"),
             dbc.CardBody([
-                # Strengths Section
+                
                 html.Div([
                     html.H5("Strengths", className="text-success mb-3"),
                     html.Ul([html.Li(item, className="mb-2") for item in analysis["strengths"]], 
@@ -868,7 +868,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
                     else html.P("No specific strengths identified.", className="text-muted")
                 ], className="mb-4"),
                 
-                # Areas for Improvement Section
+                
                 html.Div([
                     html.H5("Areas for Improvement", className="text-danger mb-3"),
                     html.Ul([html.Li(item, className="mb-2") for item in analysis["improvements"]], 
@@ -876,7 +876,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
                     else html.P("No specific improvements needed.", className="text-muted")
                 ], className="mb-4"),
                 
-                # Additional Suggestions Section
+                
                 html.Div([
                     html.H5("Additional Suggestions", className="text-primary mb-3"),
                     html.Ul([html.Li(item, className="mb-2") for item in analysis["suggestions"]], 
@@ -886,7 +886,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
                 
                 html.Hr(),
                 
-                # Changes Made Section
+                
                 html.Div([
                     html.H5("Changes Made", className="mb-3"),
                     html.Ul([html.Li(change, className="mb-2") for change in all_changes], 
@@ -897,7 +897,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
         ], className="shadow-sm")
     ])
     
-    # Create the skills output
+    
     skills_output = html.Div([
         dbc.Card([
             dbc.CardHeader("Identified Skills", className="bg-info text-white"),
@@ -923,7 +923,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
         ], className="shadow-sm")
     ])
     
-    # Create download button
+
     download_button = html.Div([
         dbc.Card([
             dbc.CardHeader("Download Enhanced Resume", className="bg-success text-white"),
@@ -941,7 +941,7 @@ def enhance_resume(n_clicks, contents, filename, enhancement_options, selected_t
         ], className="shadow-sm")
     ])
     
-    # Update progress
+    
     progress = 100
     progress_status = "Analysis complete!"
     
@@ -981,7 +981,7 @@ def download_resume(n_clicks, enhanced_text, selected_template):
     if enhanced_text is None:
         return None
     
-    # Create a DOCX file from the enhanced text
+    
     doc_byte = create_docx_from_text(enhanced_text, "enhanced_resume.docx", selected_template)
     
     return dcc.send_bytes(
